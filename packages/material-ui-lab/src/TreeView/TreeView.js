@@ -35,6 +35,7 @@ const findNextFirstChar = (firstChars, startIndex, char) => {
 
 const defaultExpandedDefault = [];
 const defaultSelectedDefault = [];
+const topLevelNodesKey = -1;
 
 const TreeView = React.forwardRef(function TreeView(props, ref) {
   const {
@@ -214,7 +215,7 @@ const TreeView = React.forwardRef(function TreeView(props, ref) {
     if (parent) {
       diff = parent.children.filter((child) => !isExpanded(child));
     } else {
-      const topLevelNodes = nodeMap.current[-1].children;
+      const topLevelNodes = nodeMap.current[topLevelNodesKey].children;
       diff = topLevelNodes.filter((node) => !isExpanded(node));
     }
     const newExpanded = expanded.concat(diff);
@@ -477,14 +478,14 @@ const TreeView = React.forwardRef(function TreeView(props, ref) {
       }
     });
     if (arrayDiff(prevChildIds.current, childIds)) {
-      nodeMap.current[-1] = { parent: null, children: childIds };
+      nodeMap.current[topLevelNodesKey] = { parent: null, children: childIds };
 
       childIds.forEach((id, index) => {
         if (index === 0) {
           setTabbable(id);
         }
       });
-      visibleNodes.current = nodeMap.current[-1].children;
+      visibleNodes.current = nodeMap.current[topLevelNodesKey].children;
       prevChildIds.current = childIds;
       setChildrenCalculated(true);
     }
@@ -505,7 +506,7 @@ const TreeView = React.forwardRef(function TreeView(props, ref) {
     };
 
     if (childrenCalculated) {
-      visibleNodes.current = buildVisible(nodeMap.current[-1].children);
+      visibleNodes.current = buildVisible(nodeMap.current[topLevelNodesKey].children);
     }
   }, [expanded, childrenCalculated, isExpanded, children]);
 
